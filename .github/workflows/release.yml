@@ -1,0 +1,35 @@
+name: Release
+on:
+  push:
+    branches: [ 'main' ]
+jobs:
+  test:
+    name: Pruebas
+    runs-on: ubuntu-latest
+    steps:
+    - name: Actualizar feat
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: refs/heads/main
+        target-branch: ${{ github.ref }}
+    - name: Checkout de repositorio
+      uses: actions/checkout@v2
+    - name: Configuración de entorno de python
+      uses: actions/setup-python@v2
+      with:
+          python-version: '3.7'
+    - name: Instalación de librerías y dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Correr pruebas
+      id: correr-pruebas
+      run: python -m unittest -v tests/test_persona.py
+    - name: Mezcla feat -> develop
+      if: ${{ success() && github.event.head_commit.message == format('Automatic merge of {0} -> refs/heads/main', github.ref) }}
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: ${{ github.ref }}
+        target-branch: refs/heads/main
