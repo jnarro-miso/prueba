@@ -8,6 +8,12 @@ jobs:
     name: Pruebas
     runs-on: ubuntu-latest
     steps:
+    - name: Actualizar feat
+      uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        source-branch: refs/heads/main
+        target-branch: ${{ github.ref }}
     - name: Checkout de repositorio
       uses: actions/checkout@v2
     - name: Configuración de entorno de python
