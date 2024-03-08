@@ -1,34 +1,26 @@
-name: Push en feature branch
+name: Push feature branch
 on:
   push:
     branches: [ 'hu**' ]
 jobs:
-  check-commit:
-    name: Revisar commit
+  pre-push:
+    name: Pasos previos
     runs-on: ubuntu-latest
     steps:
-      - name: Identificar palabra clave 
+      - name: Validar palabra clave en commit
+        if: ${{ !startsWith(github.event.head_commit.message, 'Paso') }}
         run: |
-          if [[ "${{ github.event.head_commit.message }}" == Paso* ]]; then
-            echo "Commit message starts with 'Paso'. Proceeding..."
-          else
-            echo "Commit message does not start with 'Paso'. Failing job..."
-            exit 1
-          fi
-  update-feat:
-    needs: check-commit
-    name: Actualizar feature branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Integrar develop -> feat-branch
+          echo "El commit no contiene la palabra clave 'Paso'"
+          exit 1
+      - name: Actualizar feat branch
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           source-branch: refs/heads/main
           target-branch: ${{ github.ref }}
   test:
-    needs: update-feat
-    name: Ejecutar pruebas
+    needs: pre-push
+    name: Pruebas
     runs-on: ubuntu-latest
     steps:
       - name: Checkout de repositorio
@@ -46,7 +38,7 @@ jobs:
         run: python -m unittest -v tests/test_persona.py
   merge:
     needs: test
-    name: Integrar feature branch
+    name: Integración de feat branch
     runs-on: ubuntu-latest
     steps:
       - name: Integrar feat-branch -> develop
