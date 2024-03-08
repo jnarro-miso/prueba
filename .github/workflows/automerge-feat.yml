@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Verificar palabra clave en commit
         run: |
-          if [[ "${{ github.event.head_commit.message }}" == Paso* ]]; then
+          if [[ "${{ github.event.head_commit.message }}" == feat* ]]; then
             echo "El commit contiene la palabra clave 'feat'"
             exit 0
           else
