@@ -6,3 +6,10 @@ jobs:
   Primer-job:
     name: Primer job
     runs-on: ubuntu-latest
+    steps:
+      - name: Imprimir
+        env:
+          MI_VARIABLE: Hola mundo
+        run: |
+          echo $MI_VARIABLE
+      
