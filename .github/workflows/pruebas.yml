@@ -27,4 +27,4 @@ jobs:
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         source-branch: ${{ github.ref }}
-        target-branch: refs/heads/develop
+        target-branch: refs/heads/main
