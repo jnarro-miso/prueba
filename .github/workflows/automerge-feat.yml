@@ -1,4 +1,4 @@
-name: Merge feature branch
+name: Automerge feature branch
 on:
   push:
     branches: [ 'hu**' ]
@@ -7,11 +7,15 @@ jobs:
     name: Pre-merge
     runs-on: ubuntu-latest
     steps:
-      - name: Validar palabra clave en commit
-        if: ${{ !startsWith(github.event.head_commit.message, 'feat') }}
+      - name: Verificar palabra clave en commit
         run: |
-          echo "El commit no contiene la palabra clave 'feat'"
-          exit 1
+          if startsWith(github.event.head_commit.message, 'feat'); then
+            echo "El commit contiene la palabra clave 'feat'"
+            exit 0
+          else
+            echo "El commit no contiene la palabra clave 'feat'"
+            exit 1
+          fi
       - name: Actualizar feature branch con main
         uses: tukasz/direct-merge-action@master
         with:
@@ -35,7 +39,12 @@ jobs:
           pip install -r requirements.txt
       - name: Correr pruebas
         id: correr-pruebas
-        run: python -m unittest -v tests/test_persona.py
+        run: python -m unittest
+      - name: Cálculo de cubrimiento
+        id: cubrimiento
+        run: |
+            coverage run -m unittest
+            coverage report -m
   merge:
     needs: test
     name: Integración de feature branch
