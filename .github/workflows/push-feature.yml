@@ -1,25 +1,25 @@
-name: Push feature branch
+name: Merge feature branch
 on:
   push:
     branches: [ 'hu**' ]
 jobs:
-  pre-push:
-    name: Pasos previos
+  pre-merge:
+    name: Pre-merge
     runs-on: ubuntu-latest
     steps:
       - name: Validar palabra clave en commit
-        if: ${{ !startsWith(github.event.head_commit.message, 'Paso') }}
+        if: ${{ !startsWith(github.event.head_commit.message, 'feat') }}
         run: |
-          echo "El commit no contiene la palabra clave 'Paso'"
+          echo "El commit no contiene la palabra clave 'feat'"
           exit 1
-      - name: Actualizar feat branch
+      - name: Actualizar feature branch con main
         uses: tukasz/direct-merge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           source-branch: refs/heads/main
           target-branch: ${{ github.ref }}
   test:
-    needs: pre-push
+    needs: pre-merge
     name: Pruebas
     runs-on: ubuntu-latest
     steps:
@@ -38,10 +38,10 @@ jobs:
         run: python -m unittest -v tests/test_persona.py
   merge:
     needs: test
-    name: Integración de feat branch
+    name: Integración de feature branch
     runs-on: ubuntu-latest
     steps:
-      - name: Integrar feat-branch -> develop
+      - name: Integrar feat-branch a main
         if: ${{ success() }}
         uses: tukasz/direct-merge-action@master
         with:
