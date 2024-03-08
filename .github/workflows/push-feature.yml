@@ -8,8 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Identificar palabra clave 
-        if: startsWith(github.event.head_commit.message, 'Paso')
-        run: echo "Commit message starts with 'Paso'. Proceeding..."
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" == Paso* ]]; then
+            echo "Commit message starts with 'Paso'. Proceeding..."
+          else
+            echo "Commit message does not start with 'Paso'. Failing job..."
+            exit 1
+          fi
   update-feat:
     needs: check-commit
     name: Actualizar feature branch
