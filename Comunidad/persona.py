@@ -26,11 +26,7 @@ class Persona(Base):
        return(self.nombre)
 
    def calcular_anio_nacimiento(self, ya_cumplio_anios):
-       anio_actual = datetime.datetime.now().year
-       if ya_cumplio_anios:
-           return (anio_actual - self.edad)
-       else:
-           return (anio_actual - self.edad + 1)
+       pass
 
    def almacenar(self):
        Base.metadata.create_all(engine)
