@@ -1,0 +1,8 @@
+name: Prueba workflow
+on:
+  push:
+    branches: [ main ]
+jobs:
+  Primer-job:
+    name: Primer job
+    runs-on: ubuntu-latest
